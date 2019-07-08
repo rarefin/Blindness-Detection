@@ -1,5 +1,5 @@
-from .DataLoader import TrainDataset
-from .Trainer import train
+from DataLoader import TrainDataset
+from Trainer import train
 from torch.utils.data import DataLoader
 import torch.optim as optim
 from torchvision import transforms
