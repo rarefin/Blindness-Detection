@@ -73,10 +73,10 @@ def train(model, dataloaders, criterion, optimizer, config):
             loss = running_loss / len(dataloaders[phase].dataset)
             preds = np.array(preds)
             actuals = np.array(actuals)
-            f1_score = f1_score(actuals, preds)
+            f1 = f1_score(actuals, preds)
             accuracy = accuracy_score(actuals, preds)
             kappa = cohen_kappa_score(actuals, preds, labels=[0, 1, 2, 3, 4])
-            line = '{} Loss: {:.8f}, Accuracy: {:.3}, F1: {:.3}, Kappa: {:.3}'.format(phase, loss, accuracy, f1_score, kappa)
+            line = '{} Loss: {:.8f}, Accuracy: {:.3}, F1: {:.3}, Kappa: {:.3}'.format(phase, loss, accuracy, f1, kappa)
             print(line)
             log_file.write(line + '\n')
 
