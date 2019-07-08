@@ -46,7 +46,7 @@ transform = transforms.Compose([
 train_dataset = TrainDataset(train_dir, train_df, train_indices, transform)
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 
-val_dataset = TrainDataset(train_dir, val_indices, transform)
+val_dataset = TrainDataset(train_dir, train_df, val_indices, transform)
 val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
 NUM_CLASSES = 5
