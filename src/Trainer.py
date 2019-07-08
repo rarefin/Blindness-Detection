@@ -3,6 +3,7 @@ import torch
 import copy
 import os
 import numpy as np
+from sklearn.metrics import f1_score, cohen_kappa_score, accuracy_score
 from torch.optim import lr_scheduler
 
 
@@ -69,12 +70,15 @@ def train(model, dataloaders, criterion, optimizer, config):
                 preds += list(pred)
                 actuals += list(y_batch.detach().cpu().numpy())
 
-            epoch_loss = running_loss / len(dataloaders[phase].dataset)
+            loss = running_loss / len(dataloaders[phase].dataset)
             preds = np.array(preds)
             actuals = np.array(actuals)
-            epoch_accuracy = np.mean(preds==actuals)
-            print('{} Loss: {:.8f}, Accuracy: {:.3}'.format(phase, epoch_loss, epoch_accuracy))
-            log_file.write('{} Loss: {:.8f}, Accuracy: {:.3}\n'.format(phase, epoch_loss, epoch_accuracy))
+            f1_score = f1_score(actuals, preds)
+            accuracy = accuracy_score(actuals, preds)
+            kappa = cohen_kappa_score(actuals, preds, labels=[0, 1, 2, 3, 4])
+            line = '{} Loss: {:.8f}, Accuracy: {:.3}, F1: {:.3}, Kappa: {:.3}'.format(phase, loss, accuracy, f1_score, kappa)
+            print(line)
+            log_file.write(line + '\n')
 
         if epoch % 10 == 0:
             torch.save(model.state_dict(), checkpoint_dir + '/epoch_{}.pth'.format(epoch))
