@@ -33,7 +33,8 @@ train_dir = join(data_dir, 'train_images')
 
 # Split data into train and validation
 val_proportion = config["training"]["val_proportion"]
-train_df, val_df = train_test_split(train_df, test_size=val_proportion, random_state=1, shuffle=True)
+data_indices = range(0, len(train_df))
+train_indices, val_indices = train_test_split(data_indices, test_size=val_proportion, random_state=1, shuffle=True)
 
 # Create Dataloader
 BATCH_SIZE = config["training"]["batch_size"]
@@ -42,14 +43,14 @@ transform = transforms.Compose([
     transforms.CenterCrop(224),
     transforms.ToTensor(), # because inputs dtype is PIL Image
 ])
-train_dataset = TrainDataset(train_dir, train_df, transform)
+train_dataset = TrainDataset(train_dir, train_df, train_indices, transform)
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 
-val_dataset = TrainDataset(train_dir, val_df, transform)
+val_dataset = TrainDataset(train_dir, val_indices, transform)
 val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
 NUM_CLASSES = 5
-model = torchvision.models.resnet18(pretrained=False)
+model = torchvision.models.resnet18(pretrained=True)
 num_features = model.fc.in_features
 model.fc = nn.Linear(num_features, NUM_CLASSES)
 model.fc.out_features

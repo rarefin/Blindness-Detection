@@ -4,23 +4,24 @@ from os.path import join
 
 
 class TrainDataset(Dataset):
-    def __init__(self, train_dir, train_df, transform):
+    def __init__(self, train_dir, train_df, indices, transform):
         self.train_dir = train_dir
         self.train_df = train_df
         self.transform = transform
+        self.indices = indices
 
     def __len__(self):
-        return len(self.train_df)
+        return len(self.indices)
 
     def __getitem__(self, index):
-        path = join(self.train_dir, self.train_df.loc[index, 'id_code'] + '.png')
+        path = join(self.train_dir, self.train_df.loc[self.indices[index], 'id_code'] + '.png')
         img = Image.open(path)
         img = img.convert('RGB')
 
         if self.transform is not None:
             img = self.transform(img)
 
-        label = int(self.train_df.loc[index, 'diagnosis'])
+        label = int(self.train_df.loc[self.indices[index], 'diagnosis'])
 
         return img, label
 
